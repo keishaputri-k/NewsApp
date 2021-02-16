@@ -19,12 +19,14 @@ class ProfileActivity : AppCompatActivity(), View.OnClickListener{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         supportActionBar?.hide()
-        btn_logout.setOnClickListener(this)
+        tv_logout.setOnClickListener(this)
+        iv_back_profile.setOnClickListener(this)
     }
 
     override fun onClick(p0: View) {
         when(p0.id){
-            R.id.btn_logout -> logout()
+            R.id.tv_logout -> logout()
+            R.id.iv_back_profile -> startActivity(Intent(MainActivity.getLaunchService(this)))
         }
     }
 
