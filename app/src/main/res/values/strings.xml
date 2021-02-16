@@ -23,4 +23,15 @@
     <string name="txt_pass_mismatch">Password Mismatch</string>
     <string name="txt_users">Users</string>
     <string name="txt_register_failed">Register Failed</string>
+    <string name="txt_breaking_news">Breaking News</string>
+    <string name="txt_highlight">Tesla Cybertruck is finally ready to enter mass production</string>
+    <string name="txt_william_frankyn_miller">William Frankyn-Miller</string>
+    <string name="txt_all">All</string>
+    <string name="txt_international">International</string>
+    <string name="txt_media">Media</string>
+    <string name="txt_magazine">Magazine</string>
+    <string name="txt_business">Business</string>
+    <string name="txt_title_items">Global AI Action Alliance</string>
+    <string name="txt_15_02_2021">15/02/2021</string>
+    <string name="txt_10_min_read">10 min read</string>
 </resources>
