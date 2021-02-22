@@ -10,17 +10,9 @@ import com.bumptech.glide.Glide
 import com.kei.newsapp.activity.DetailActivity
 import com.kei.newsapp.model.ArticlesItem
 import kotlinx.android.synthetic.main.news_item.view.*
+import org.jetbrains.anko.intentFor
 
 class NewsAdapter (var context: Context, var listNews : List<ArticlesItem?>?)  : RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
-    private var onItemClickCallback : OnItemClickCallBack? = null
-
-    fun setItemOnClickCallBack(onItemClickCallBack: OnItemClickCallBack){
-        this.onItemClickCallback = onItemClickCallBack
-    }
-
-    interface OnItemClickCallBack {
-        fun onItemClicked(newsData : ArticlesItem)
-    }
 
     inner class ViewHolder (view: View) : RecyclerView.ViewHolder(view){
         fun bind (news: ArticlesItem){
@@ -30,8 +22,12 @@ class NewsAdapter (var context: Context, var listNews : List<ArticlesItem?>?)  :
                 tv_duration_item.text = news.author
                 Glide.with(context).load(news.urlToImage).centerCrop().into(iv_item_news)
                 itemView.setOnClickListener{
-                    onItemClickCallback?.onItemClicked(news)
-                } 
+                    itemView.context.startActivity(
+                        itemView.context.intentFor<DetailActivity>(
+                                    "EXTRA_NEWS" to news
+                        )
+                    )
+                }
             }
         }
     }

@@ -53,17 +53,17 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             Toast.makeText(this, getString(R.string.txt_pass_mismatch), Toast.LENGTH_SHORT).show()
         }else{
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
-                if (it.isSuccessful){
+                if(it.isSuccessful){
                     firebaseUserId = mAuth.currentUser!!.uid
                     refUsers = FirebaseDatabase.getInstance().reference.child(getString(R.string.txt_users)).child(firebaseUserId)
-                    val userHashMap = HashMap <String, Any>()
-                    userHashMap ["uid"] = firebaseUserId
-                    userHashMap ["fullName"] = fullName
-                    userHashMap ["email"] = email
-                    userHashMap ["linkedIn"] = ""
-                    userHashMap ["instagram"] = ""
-                    userHashMap ["medium"] = ""
-                    userHashMap ["photo"] = ""
+                    val userHashMap = HashMap<String, Any>()
+                    userHashMap["uid"] = firebaseUserId
+                    userHashMap["fullName"] = fullName
+                    userHashMap["email"] = email
+                    userHashMap["linkedIn"] = ""
+                    userHashMap["instagram"] = ""
+                    userHashMap["medium"] = ""
+                    userHashMap["photo"]=""
 
                     refUsers.updateChildren(userHashMap).addOnCompleteListener {
                         if (it.isSuccessful){
@@ -74,7 +74,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 }else{
                     val progress = ProgressDialog(this, R.style.Theme_AppCompat_Light_Dialog)
                     progress.hide()
-                    Toast.makeText(this, getString(R.string.txt_register_failed) + it.exception!!.message.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.txt_error) + it.exception!!
+                        .message.toString(), Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }

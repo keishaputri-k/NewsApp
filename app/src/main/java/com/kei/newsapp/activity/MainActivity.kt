@@ -9,6 +9,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 import com.kei.newsapp.NewsAdapter
 import com.kei.newsapp.R
 import com.kei.newsapp.model.ResponseNews
@@ -21,6 +25,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+    var refUsers : DatabaseReference? = null
+    var firebaseUser : FirebaseUser? = null
     val date = getCurrentDateTime()
 
     private fun getCurrentDateTime(): Date {
@@ -42,13 +48,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         ib_profile_main.setOnClickListener(this)
         tv_date_main.text = date.toString("dd/MM/yyyy")
         getNews()
+
+        firebaseUser = FirebaseAuth.getInstance().currentUser
+        refUsers = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser!!.uid)
+        refUsers!!.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (p0 in snapshot.children) {
+                    val photo = snapshot.child("photo").value.toString()
+                    Glide.with(this@MainActivity).load(photo).into(iv_profile_main)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
-    private fun getNews() {
-        var country = "id"
-        var apiKey = "8dddfa41ffd2420b960f4ff66b17b0b8"
 
-        var loading = ProgressDialog.show(this, "Request Data", "Loading...")
+    private fun getNews() {
+        val country = "id"
+        val apiKey = "8dddfa41ffd2420b960f4ff66b17b0b8"
+
+        val loading = ProgressDialog.show(this, "Request Data", "Loading...")
         RetrofitConfig.getInstance().getNewsData(country, apiKey).enqueue(
             object : Callback<ResponseNews>{
                 override fun onResponse(
@@ -65,6 +87,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             val newsAdapter = NewsAdapter(this@MainActivity, newsData)
                             rv_main.adapter = newsAdapter
                             rv_main.layoutManager = LinearLayoutManager(this@MainActivity)
+
+                            val dataHighlight = response.body()
+                            Glide.with(this@MainActivity).load(dataHighlight?.articles?.component5()?.urlToImage).centerCrop().into(iv_highlight)
+                            tv_highlight.text = dataHighlight?.articles?.component5()?.title
+                            tv_name_author.text = dataHighlight?.articles?.component5()?.author
+                            tv_date_highlight.text = dataHighlight?.articles?.component5()?.publishedAt
                         }else{
                             Toast.makeText(this@MainActivity, "Data Failed !", Toast.LENGTH_SHORT).show()
                         }
